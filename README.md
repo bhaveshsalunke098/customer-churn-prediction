@@ -4,7 +4,7 @@ An end-to-end machine learning project that analyzes customer churn using IBM's 
 
 ## Project Overview
 
-Customer churn occurs when a customer stops using a company's services. Identifying customers associated with higher churn probabilities can help businesses better understand customer behavior and explore potential retention strategies.
+Customer churn occurs when a customer stops using a company's services. Identifying customers with a higher estimated probability of churn can help businesses understand customer behavior and explore potential retention strategies.
 
 This project uses customer demographics, service subscriptions, contract details, tenure, and billing information to classify customers according to their churn status.
 
@@ -27,24 +27,24 @@ The dataset contains 7,043 customer records and 21 columns, including the target
 
 The raw CSV is not included in this repository. The project downloads it automatically when the data-loading script runs, provided the source is accessible and the local dataset is not already present.
 
-### Data preprocessing
+### Data Preprocessing
 
 - Converts `TotalCharges` from text to numeric values.
 - Handles blank `TotalCharges` values associated with zero-tenure customers.
-- Separates numeric and categorical features.
+- Separates numerical and categorical features.
 - Applies preprocessing through a Scikit-learn pipeline.
 - Uses one-hot encoding for categorical variables.
 
 ## Technologies Used
 
 - **Programming:** Python
-- **Data analysis:** Pandas, NumPy
+- **Data Analysis:** Pandas, NumPy
 - **Visualization:** Matplotlib
-- **Machine learning:** Scikit-learn
+- **Machine Learning:** Scikit-learn
 - **Explainable AI:** SHAP
-- **Web application:** Streamlit
-- **Model persistence:** Joblib
-- **Version control:** Git and GitHub
+- **Web Application:** Streamlit
+- **Model Persistence:** Joblib
+- **Version Control:** Git and GitHub
 
 ## Machine Learning Workflow
 
@@ -53,16 +53,16 @@ The raw CSV is not included in this repository. The project downloads it automat
 3. Preprocess numerical and categorical features.
 4. Compare Logistic Regression, Random Forest, and HistGradientBoosting.
 5. Select a candidate model using validation ROC-AUC.
-6. Refit the selected model on the training and validation data.
+6. Refit the selected model on the combined training and validation data.
 7. Evaluate the final model on the held-out test set.
 8. Save the fitted pipeline and evaluation outputs.
 9. Generate interactive predictions and SHAP explanations in Streamlit.
 
 ## Model Evaluation
 
-The selected Logistic Regression model produced the following reported results on the held-out test set:
+The selected Logistic Regression model achieved the following reported results on the held-out test set:
 
-| Metric | Test result |
+| Metric | Test Result |
 |---|---:|
 | Accuracy | 73.81% |
 | Precision | 50.43% |
@@ -71,9 +71,9 @@ The selected Logistic Regression model produced the following reported results o
 | ROC-AUC | 84.16% |
 | PR-AUC | 63.27% |
 
-These metrics describe the reported model run and may differ if the dataset, dependencies, split, or training configuration changes.
+These metrics reflect the reported model run. Results may vary if the dataset, dependencies, data split, or training configuration changes.
 
-**Interpretation:** The model identified approximately 78% of actual churn customers in the test set. Its precision indicates that some customers predicted as churners did not belong to the actual churn class. Accuracy alone is therefore insufficient to assess its usefulness.
+**Interpretation:** The model identified approximately 78% of actual churn customers in the test set. Its precision indicates that some customers predicted as churners did not belong to the actual churn class. Therefore, accuracy alone is insufficient to assess the model's usefulness.
 
 The classification threshold is configurable in the application. The current 50% threshold is a demonstration setting, not a business-validated decision threshold.
 
@@ -87,18 +87,18 @@ The application allows users to enter a customer profile and estimate the probab
 - Estimated churn probability.
 - Illustrative probability bands.
 - Classification result using a 50% threshold.
-- Individual SHAP explanation for a selected customer.
+- Individual SHAP explanations for a selected customer.
 - Global feature importance based on a sample of customers.
 - Visualizations showing the direction and magnitude of encoded feature contributions.
 
 ### Understanding SHAP
 
-SHAP estimates how features contribute to the model's output.
+SHAP estimates how individual features contribute to the model's output.
 
 - **Positive SHAP values** push the Logistic Regression output toward the churn class.
 - **Negative SHAP values** push the output away from the churn class.
-- The displayed SHAP values are in log-odds space, not direct percentage-point changes in probability.
-- Global importance summarizes the average absolute contribution across the sampled customers.
+- SHAP values are expressed in log-odds space, not as direct percentage-point changes in probability.
+- Global feature importance summarizes the average absolute SHAP contribution across the sampled customers.
 
 These explanations describe model behavior and do not establish causal relationships.
 
@@ -110,14 +110,14 @@ These explanations describe model behavior and do not establish causal relations
 - Git (optional, for cloning the repository).
 - Internet access for the initial dataset download.
 
-### 1. Clone the repository
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/bhaveshsalunke098/customer-churn-prediction.git
 cd customer-churn-prediction
 ```
 
-### 2. Create a virtual environment
+### 2. Create a Virtual Environment
 
 **Windows PowerShell**
 
@@ -133,16 +133,14 @@ python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-### 3. Install dependencies
+### 3. Install Dependencies
 
 ```bash
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-Make sure the requirements include the packages needed for the application, including `shap`, `streamlit`, `scikit-learn`, `pandas`, `numpy`, `matplotlib`, and `joblib`.
-
-### 4. Run exploratory data analysis
+### 4. Run Exploratory Data Analysis
 
 ```bash
 python eda.py
@@ -150,19 +148,19 @@ python eda.py
 
 The script loads or downloads the dataset and generates exploratory outputs in the configured reports directory.
 
-### 5. Train and evaluate the models
+### 5. Train and Evaluate the Models
 
 ```bash
 python train.py
 ```
 
-This step generates the fitted model and evaluation outputs. The app expects the saved model at:
+This step generates the fitted model and evaluation outputs. The Streamlit application expects the saved model at:
 
 ```text
 models/churn_pipeline.joblib
 ```
 
-### 6. Launch the application
+### 6. Launch the Application
 
 ```bash
 python -m streamlit run app.py
@@ -170,7 +168,7 @@ python -m streamlit run app.py
 
 Open the local URL printed in the terminal by Streamlit.
 
-**Note:** If the repository does not contain the trained model artifact, run the training step before launching the application.
+**Note:** If the trained model artifact is not included in the repository, run the training step before launching the application.
 
 ## Repository Structure
 
@@ -196,16 +194,16 @@ customer-churn-prediction/
 │   └── test_predictions.csv
 └── data/
     └── raw/
-        └── Telco-Customer-Churn.csv  # downloaded locally; not committed
+        └── Telco-Customer-Churn.csv  # Downloaded locally; not committed
 ```
 
-Generated files may vary depending on the training and analysis scripts. The dataset, virtual environment, cache files, secrets, and unnecessary temporary files should not be committed.
+Generated files may vary depending on the training and analysis scripts. The raw dataset, virtual environment, cache files, secrets, and unnecessary temporary files should not be committed.
 
 ## Limitations
 
 - This is a classification demonstration using a sample dataset, not a time-ordered monthly churn forecasting system.
 - Predictions are estimates and depend on the training data and model.
-- SHAP explanations describe associations learned by the model; they do not prove cause and effect.
+- SHAP explanations describe patterns learned by the model; they do not prove cause and effect.
 - Probability bands and the 50% classification threshold are illustrative rather than validated business policies.
 - Real-world deployment would require further validation, probability calibration, monitoring, privacy safeguards, and business-specific threshold selection.
 
