@@ -1,117 +1,231 @@
 # Customer Churn Prediction
 
-An end-to-end machine learning portfolio project that explores customer churn in IBM's sample telecommunications dataset, compares classification models, and provides an interactive Streamlit demo.
+An end-to-end machine learning project that analyzes customer churn using IBM's Telco Customer Churn dataset. The project compares classification models, evaluates performance using multiple metrics, and provides an interactive Streamlit application with SHAP-based explainability.
 
-## Problem statement
+## Project Overview
 
-Customer churn is when a customer stops using a service. This project uses customer profile, service, contract, tenure, and billing information to estimate whether a customer belongs to the `Churn = Yes` class.
+Customer churn occurs when a customer stops using a company's services. Identifying customers associated with higher churn probabilities can help businesses better understand customer behavior and explore potential retention strategies.
 
-**Important limitation:** the dataset is a cross-sectional sample and is not a time-ordered series of monthly customer snapshots. This is a classification demonstration, not proof of future-month forecasting or proof that a retention action causes a customer to stay.
+This project uses customer demographics, service subscriptions, contract details, tenure, and billing information to classify customers according to their churn status.
+
+**Key objectives:**
+- Perform exploratory data analysis (EDA) and data quality checks.
+- Build and compare multiple machine learning classification models.
+- Evaluate performance using classification and ranking metrics.
+- Develop an interactive application for customer-level predictions.
+- Explain model predictions using SHAP.
 
 ## Dataset
 
-IBM Telco Customer Churn sample dataset:
-- IBM repository: https://github.com/IBM/telco-customer-churn-on-icp4d
+**IBM Telco Customer Churn Dataset**
+
+- Official IBM repository: https://github.com/IBM/telco-customer-churn-on-icp4d
 - Direct CSV: https://raw.githubusercontent.com/IBM/telco-customer-churn-on-icp4d/master/data/Telco-Customer-Churn.csv
-- Alternative Kaggle page: https://www.kaggle.com/datasets/blastchar/telco-customer-churn
+- Alternative source: https://www.kaggle.com/datasets/blastchar/telco-customer-churn
 
-The source contains about 7,043 customer records and 21 columns, including the `Churn` target. `TotalCharges` is stored as text and includes blank values for some zero-tenure customers. This project converts it to numeric and fills blank zero-tenure charges with 0.
+The dataset contains 7,043 customer records and 21 columns, including the target variable `Churn`.
 
-## Features
+The raw CSV is not included in this repository. The project downloads it automatically when the data-loading script runs, provided the source is accessible and the local dataset is not already present.
 
-- Data quality checks and exploratory visualizations
-- Numeric and categorical preprocessing using Scikit-learn pipelines
-- One-hot encoding for categorical variables
-- Comparison of Logistic Regression, Random Forest, and HistGradientBoosting
-- Evaluation using accuracy, precision, recall, F1, ROC-AUC and PR-AUC
-- Saved fitted pipeline and test predictions
-- Streamlit interface for single-customer predictions
+### Data preprocessing
 
-## Setup
+- Converts `TotalCharges` from text to numeric values.
+- Handles blank `TotalCharges` values associated with zero-tenure customers.
+- Separates numeric and categorical features.
+- Applies preprocessing through a Scikit-learn pipeline.
+- Uses one-hot encoding for categorical variables.
 
-Python 3.10+ recommended.
+## Technologies Used
 
-### 1. Create and activate a virtual environment
+- **Programming:** Python
+- **Data analysis:** Pandas, NumPy
+- **Visualization:** Matplotlib
+- **Machine learning:** Scikit-learn
+- **Explainable AI:** SHAP
+- **Web application:** Streamlit
+- **Model persistence:** Joblib
+- **Version control:** Git and GitHub
 
-Windows PowerShell:
-```powershell
-python -m venv .venv
-.venv\Scripts\Activate.ps1
+## Machine Learning Workflow
+
+1. Load and validate the dataset.
+2. Perform exploratory data analysis and visualize churn patterns.
+3. Preprocess numerical and categorical features.
+4. Compare Logistic Regression, Random Forest, and HistGradientBoosting.
+5. Select a candidate model using validation ROC-AUC.
+6. Refit the selected model on the training and validation data.
+7. Evaluate the final model on the held-out test set.
+8. Save the fitted pipeline and evaluation outputs.
+9. Generate interactive predictions and SHAP explanations in Streamlit.
+
+## Model Evaluation
+
+The selected Logistic Regression model produced the following reported results on the held-out test set:
+
+| Metric | Test result |
+|---|---:|
+| Accuracy | 73.81% |
+| Precision | 50.43% |
+| Recall | 78.34% |
+| F1-score | 61.36% |
+| ROC-AUC | 84.16% |
+| PR-AUC | 63.27% |
+
+These metrics describe the reported model run and may differ if the dataset, dependencies, split, or training configuration changes.
+
+**Interpretation:** The model identified approximately 78% of actual churn customers in the test set. Its precision indicates that some customers predicted as churners did not belong to the actual churn class. Accuracy alone is therefore insufficient to assess its usefulness.
+
+The classification threshold is configurable in the application. The current 50% threshold is a demonstration setting, not a business-validated decision threshold.
+
+## Streamlit Application
+
+The application allows users to enter a customer profile and estimate the probability of churn.
+
+### Features
+
+- Interactive customer profile form.
+- Estimated churn probability.
+- Illustrative probability bands.
+- Classification result using a 50% threshold.
+- Individual SHAP explanation for a selected customer.
+- Global feature importance based on a sample of customers.
+- Visualizations showing the direction and magnitude of encoded feature contributions.
+
+### Understanding SHAP
+
+SHAP estimates how features contribute to the model's output.
+
+- **Positive SHAP values** push the Logistic Regression output toward the churn class.
+- **Negative SHAP values** push the output away from the churn class.
+- The displayed SHAP values are in log-odds space, not direct percentage-point changes in probability.
+- Global importance summarizes the average absolute contribution across the sampled customers.
+
+These explanations describe model behavior and do not establish causal relationships.
+
+## Getting Started
+
+### Prerequisites
+
+- Python 3.10 or newer recommended.
+- Git (optional, for cloning the repository).
+- Internet access for the initial dataset download.
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/bhaveshsalunke098/customer-churn-prediction.git
+cd customer-churn-prediction
 ```
 
-macOS/Linux:
+### 2. Create a virtual environment
+
+**Windows PowerShell**
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+**macOS/Linux**
+
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-### 2. Install dependencies
+### 3. Install dependencies
 
 ```bash
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### 3. Run exploratory data analysis
+Make sure the requirements include the packages needed for the application, including `shap`, `streamlit`, `scikit-learn`, `pandas`, `numpy`, `matplotlib`, and `joblib`.
+
+### 4. Run exploratory data analysis
 
 ```bash
 python eda.py
 ```
 
-The dataset is downloaded automatically on first run into `data/raw/`. Charts are saved in `reports/`.
+The script loads or downloads the dataset and generates exploratory outputs in the configured reports directory.
 
-### 4. Train and evaluate models
+### 5. Train and evaluate the models
 
 ```bash
 python train.py
 ```
 
-Outputs:
-- `reports/model_comparison.csv`
-- `reports/test_predictions.csv`
-- `models/churn_pipeline.joblib`
-- `models/model_info.json`
+This step generates the fitted model and evaluation outputs. The app expects the saved model at:
 
-Metrics are generated by your own run; do not copy unverified scores into a resume.
-
-### 5. Launch the application
-
-```bash
-streamlit run app.py
+```text
+models/churn_pipeline.joblib
 ```
 
-## Evaluation notes
+### 6. Launch the application
 
-The script uses stratified train/validation/test splits (approximately 64%/16%/20%). It selects the candidate model using validation ROC-AUC, refits that model on train+validation data, and evaluates it once on the untouched test set. Avoid optimizing a model repeatedly against the test set.
+```bash
+python -m streamlit run app.py
+```
 
-Accuracy alone is not sufficient, especially when churn and non-churn counts differ. Review recall, precision, F1, ROC-AUC, PR-AUC, and the confusion matrix. A business threshold should reflect the relative costs of missed churn and unnecessary retention offers.
+Open the local URL printed in the terminal by Streamlit.
 
-## Repository structure
+**Note:** If the repository does not contain the trained model artifact, run the training step before launching the application.
+
+## Repository Structure
 
 ```text
 customer-churn-prediction/
-├── data/
-│   └── raw/                 # downloaded dataset (ignored by Git)
-├── models/                  # fitted model artifacts (ignored by Git)
-├── reports/                 # generated metrics and charts (ignored by Git)
-├── src/
-│   └── data_utils.py
 ├── app.py
 ├── eda.py
 ├── train.py
 ├── requirements.txt
-└── README.md
+├── README.md
+├── .gitignore
+├── src/
+│   ├── __init__.py
+│   └── data_utils.py
+├── models/
+│   ├── churn_pipeline.joblib
+│   └── model_info.json
+├── reports/
+│   ├── churn_by_contract.png
+│   ├── churn_distribution.png
+│   ├── tenure_by_churn.png
+│   ├── validation_model_comparison.csv
+│   └── test_predictions.csv
+└── data/
+    └── raw/
+        └── Telco-Customer-Churn.csv  # downloaded locally; not committed
 ```
 
-## Suggested future improvements
+Generated files may vary depending on the training and analysis scripts. The dataset, virtual environment, cache files, secrets, and unnecessary temporary files should not be committed.
 
-- Add cross-validation and hyperparameter tuning.
-- Calibrate probabilities and select a business-specific threshold on validation data.
-- Add SHAP or permutation importance explanations.
-- Add automated tests and a CI workflow.
-- Add a batch prediction page and SQL persistence.
-- Deploy the app and include screenshots in this README.
+## Limitations
 
-## Responsible use
+- This is a classification demonstration using a sample dataset, not a time-ordered monthly churn forecasting system.
+- Predictions are estimates and depend on the training data and model.
+- SHAP explanations describe associations learned by the model; they do not prove cause and effect.
+- Probability bands and the 50% classification threshold are illustrative rather than validated business policies.
+- Real-world deployment would require further validation, probability calibration, monitoring, privacy safeguards, and business-specific threshold selection.
 
-This is a learning project using fictional sample data. Predictions should not be treated as certainty or used as the sole basis for consequential decisions about real customers.
+## Future Improvements
+
+- Hyperparameter tuning and cross-validation.
+- Probability calibration and business-specific threshold selection.
+- Automated testing and continuous integration.
+- Batch prediction functionality.
+- SQL integration for storing prediction results.
+- Deployment to a cloud hosting platform.
+
+## Responsible Use
+
+This project is intended for educational and portfolio demonstration purposes. Model outputs should not be treated as certainty or used as the sole basis for consequential decisions about real customers.
+
+## Author
+
+**Bhavesh Salunke**
+
+- GitHub: https://github.com/bhaveshsalunke098
+- LinkedIn: https://linkedin.com/in/bhavesh-salunke-7a4163283
+- Portfolio: https://techbhavesh.netlify.app
